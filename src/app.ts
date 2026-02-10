@@ -1,5 +1,7 @@
 import Fastify from "fastify";
 import { sequelize, connectDB } from "./db/connection";
+import "./models";
+import routes from "./routes";
 
 const app = Fastify({
   logger: {
@@ -14,44 +16,22 @@ const app = Fastify({
   }
 });
 
+// DB connect
 app.addHook("onReady", async () => {
   try {
     await connectDB();
-    await sequelize.sync();
+    await sequelize.sync({ alter: true });
     app.log.info("Database connected and models synced");
   } catch (error) {
-    app.log.error("Database initialization failed");
     app.log.error(error);
     process.exit(1);
   }
 });
 
-app.addHook("onRequest", async (request) => {
-  request.log.info(
-    {
-      req: {
-        method: request.method,
-        url: request.url,
-        hostname: request.hostname,
-        remoteAddress: request.ip
-      }
-    },
-    "Incoming request"
-  );
-});
+// Register all routes
+app.register(routes);
 
-app.addHook("onResponse", async (request, reply) => {
-  request.log.info(
-    {
-      res: {
-        statusCode: reply.statusCode
-      },
-      responseTime: reply.elapsedTime
-    },
-    "Request completed"
-  );
-});
-
+// Test routes
 app.get("/", async () => {
   return { message: "ZP SCHOOL server is running" };
 });

@@ -15,7 +15,25 @@ Admin.init(
       unique: true,
       allowNull: false,
     },
+    first_name: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+    middle_name: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+    last_name: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
     designation: DataTypes.STRING,
+    department: DataTypes.STRING,
+    joining_date: DataTypes.DATE,
+    date_of_birth: DataTypes.DATE,
+    gender: DataTypes.ENUM('male', 'female', 'other'),
+    address: DataTypes.TEXT,
+    blood_group: DataTypes.STRING,
   },
   {
     sequelize,

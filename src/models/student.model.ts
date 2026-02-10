@@ -15,11 +15,28 @@ Student.init(
       unique: true,
       allowNull: false,
     },
+    first_name: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+    middle_name: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+    last_name: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
     roll_no: DataTypes.STRING,
     class: DataTypes.STRING,
     section: DataTypes.STRING,
     parent_name: DataTypes.STRING,
     parent_phone: DataTypes.STRING,
+    date_of_birth: DataTypes.DATE,
+    gender: DataTypes.ENUM('male', 'female', 'other'),
+    address: DataTypes.TEXT,
+    admission_date: DataTypes.DATE,
+    blood_group: DataTypes.STRING,
   },
   {
     sequelize,

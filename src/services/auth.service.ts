@@ -7,12 +7,17 @@ const JWT_SECRET = process.env.JWT_SECRET || "school_secret";
 const JWT_REFRESH_SECRET = process.env.JWT_REFRESH_SECRET || "school_refresh_secret";
 
 interface SignupData {
-  name: string;
+  first_name: string;
+  middle_name?: string;
+  last_name: string;
   phone: string;
   password: string;
   role_name: string;
-  role_id?: number;
+  role_id?: number | string;
   client_id: number;
+  profile_image?: string;
+  date_of_birth?: Date;
+  gender?: 'male' | 'female' | 'other';
   class?: string;
   section?: string;
   parent_name?: string;

@@ -4,7 +4,7 @@ export interface IUser {
   phone: string;
   password: string;
   role_id: string;
-  client_id?: string;
+  client_id?: string | null;
   is_active?: boolean;
   created_at?: Date;
 }

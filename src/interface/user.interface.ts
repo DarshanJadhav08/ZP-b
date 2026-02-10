@@ -1,11 +1,17 @@
 export interface IUser {
   id: string;
-  name?: string;
+  first_name: string;
+  middle_name?: string;
+  last_name: string;
   phone: string;
   password: string;
   role_id: string;
+  role_name: string;
   client_id?: string;
   is_active?: boolean;
+  profile_image?: string;
+  date_of_birth?: Date;
+  gender?: 'male' | 'female' | 'other';
   created_at?: Date;
 }
 

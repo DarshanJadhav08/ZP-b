@@ -1,6 +1,6 @@
 import { FastifyRequest, FastifyReply } from "fastify";
 import { User } from "../models/users.model";
-import { Teacher } from "../models/teacher.modle";
+import { Teacher } from "../models/teacher.model";
 import { Role } from "../models/role.model";
 import bcrypt from "bcrypt";
 import { Op } from "sequelize";

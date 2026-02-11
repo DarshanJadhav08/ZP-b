@@ -6,8 +6,7 @@ export interface IUser {
   phone: string;
   password: string;
   role_id: string;
-  role_name: string;
-  client_id?: string;
+  client_id?: string | null;
   is_active?: boolean;
   profile_image?: string;
   date_of_birth?: Date;

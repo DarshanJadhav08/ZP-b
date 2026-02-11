@@ -9,9 +9,9 @@ import { Admin } from "./admin.model";
 User.belongsTo(Role, { foreignKey: "role_id" });
 User.belongsTo(Client, { foreignKey: "client_id" });
 
-Student.belongsTo(User, { foreignKey: "user_id", onDelete: "CASCADE" });
-Teacher.belongsTo(User, { foreignKey: "user_id", onDelete: "CASCADE" });
-Admin.belongsTo(User, { foreignKey: "user_id", onDelete: "CASCADE" });
+Student.belongsTo(User, { foreignKey: "user_id", as: "user", onDelete: "CASCADE" });
+Teacher.belongsTo(User, { foreignKey: "user_id", as: "user", onDelete: "CASCADE" });
+Admin.belongsTo(User, { foreignKey: "user_id", as: "user", onDelete: "CASCADE" });
 
 export {
   sequelize,

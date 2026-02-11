@@ -79,6 +79,10 @@ export const createUserWithRole = async (data: any) => {
           designation: data.admin_designation,
           mobile_number: data.mobile_number,
           profile_image_url: data.profile_image_url,
+          qualification: data.admin_qualification,
+          date_of_birth: data.admin_date_of_birth,
+          experience: data.admin_experience,
+          gender: data.admin_gender,
         },
         { transaction: t }
       );

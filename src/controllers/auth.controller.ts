@@ -9,7 +9,7 @@ interface SignupBody {
   phone: string;
   password: string;
   role_name: string;
-  client_id: string;  // Changed to string (UUID)
+  client_id: string;
   // Student fields
   parent_name?: string;
   mobile_number?: string;
@@ -32,6 +32,10 @@ interface SignupBody {
   assigned_division?: string;
   // Admin fields
   admin_designation?: string;
+  admin_qualification?: string;
+  admin_date_of_birth?: Date;
+  admin_experience?: number;
+  admin_gender?: 'male' | 'female' | 'other';
 }
 
 interface LoginBody {

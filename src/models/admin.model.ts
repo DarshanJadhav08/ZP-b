@@ -52,6 +52,22 @@ Admin.init(
       type: DataTypes.STRING,
       allowNull: true,
     },
+    qualification: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+    date_of_birth: {
+      type: DataTypes.DATEONLY,
+      allowNull: true,
+    },
+    experience: {
+      type: DataTypes.INTEGER,
+      allowNull: true,
+    },
+    gender: {
+      type: DataTypes.ENUM('male', 'female', 'other'),
+      allowNull: true,
+    },
   },
   {
     sequelize,

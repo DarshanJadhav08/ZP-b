@@ -13,8 +13,8 @@ interface SignupData {
   phone: string;
   password: string;
   role_name: string;
-  role_id?: string;  // Changed to string (UUID)
-  client_id: string;  // Changed to string (UUID)
+  role_id?: string;
+  client_id: string;
   // Student fields
   parent_name?: string;
   mobile_number?: string;
@@ -37,6 +37,10 @@ interface SignupData {
   assigned_division?: string;
   // Admin fields
   admin_designation?: string;
+  admin_qualification?: string;
+  admin_date_of_birth?: Date;
+  admin_experience?: number;
+  admin_gender?: 'male' | 'female' | 'other';
 }
 
 const generateTokens = (userId: number | string, roleId: number | string, roleName: string, clientId?: string | null) => {

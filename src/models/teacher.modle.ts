@@ -14,10 +14,23 @@ Teacher.init(
       type: DataTypes.UUID,
       unique: true,
       allowNull: false,
+      references: {
+        model: 'users',
+        key: 'id',
+      },
+      onDelete: 'CASCADE',
+    },
+    client_id: {
+      type: DataTypes.UUID,
+      allowNull: false,
+      references: {
+        model: 'clients',
+        key: 'id',
+      },
     },
     first_name: {
       type: DataTypes.STRING,
-      allowNull: true,
+      allowNull: false,
     },
     middle_name: {
       type: DataTypes.STRING,
@@ -25,17 +38,52 @@ Teacher.init(
     },
     last_name: {
       type: DataTypes.STRING,
+      allowNull: false,
+    },
+    date_of_birth: {
+      type: DataTypes.DATE,
       allowNull: true,
     },
-    subject: DataTypes.STRING,
-    qualification: DataTypes.STRING,
-    experience_years: DataTypes.INTEGER,
-    joining_date: DataTypes.DATE,
-    specialization: DataTypes.STRING,
-    date_of_birth: DataTypes.DATE,
-    gender: DataTypes.ENUM('male', 'female', 'other'),
-    address: DataTypes.TEXT,
-    blood_group: DataTypes.STRING,
+    gender: {
+      type: DataTypes.ENUM('male', 'female', 'other'),
+      allowNull: true,
+    },
+    profile_image_url: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+    mobile_number: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+    designation: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+    qualification: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+    joining_date: {
+      type: DataTypes.DATE,
+      allowNull: true,
+    },
+    experience_years: {
+      type: DataTypes.INTEGER,
+      allowNull: true,
+    },
+    is_class_teacher: {
+      type: DataTypes.BOOLEAN,
+      defaultValue: false,
+    },
+    assigned_standard: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+    assigned_division: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
   },
   {
     sequelize,

@@ -27,8 +27,8 @@ export const createStudentController = async (req: FastifyRequest, reply: Fastif
       phone,
       password: hashedPassword,
       role_id: studentRole.id,
+      role_name: "student",
       client_id: null,
-      is_active: true,
     });
 
     await Student.create({
@@ -69,11 +69,8 @@ export const getAllStudentsController = async (req: FastifyRequest, reply: Fasti
     const whereUser: any = {};
     const whereStudent: any = {};
 
-    // By default, only show active users
-    whereUser.is_active = true;
-
     if (search) {
-      whereUser.name = { [Op.like]: `%${search}%` };
+      whereUser.first_name = { [Op.like]: `%${search}%` };
     }
 
     if (className) {
@@ -84,10 +81,6 @@ export const getAllStudentsController = async (req: FastifyRequest, reply: Fasti
       whereStudent.section = section;
     }
 
-    if (is_active !== undefined) {
-      whereUser.is_active = is_active === 'true';
-    }
-
     const { count, rows: students } = await Student.findAndCountAll({
       where: whereStudent,
       include: [
@@ -95,7 +88,7 @@ export const getAllStudentsController = async (req: FastifyRequest, reply: Fasti
           model: User,
           as: "user",
           where: whereUser,
-          attributes: ["id", "first_name","middle_name","last_name", "phone", "is_active"],
+          attributes: ["id", "first_name","middle_name","last_name", "phone"],
         },
       ],
       limit: Number(limit),
@@ -124,7 +117,7 @@ export const getAllStudentsController = async (req: FastifyRequest, reply: Fasti
 export const updateStudentController = async (req: FastifyRequest, reply: FastifyReply) => {
   try {
     const { student_id } = req.params as any;
-    const { first_name, phone, roll_no, class: className, section, parent_name, parent_phone, is_active } = req.body as any;
+    const { first_name, phone, roll_no, class: className, section, parent_name, parent_phone } = req.body as any;
 
     const student = await Student.findByPk(student_id);
     if (!student) {
@@ -133,7 +126,7 @@ export const updateStudentController = async (req: FastifyRequest, reply: Fastif
 
     const user = await User.findByPk(student.get("user_id") as string);
     if (user) {
-      await user.update({ first_name, phone, is_active });
+      await user.update({ first_name, phone });
     }
 
     await student.update({ roll_no, class: className, section, parent_name, parent_phone });
@@ -156,10 +149,10 @@ export const deleteStudentController = async (req: FastifyRequest, reply: Fastif
 
     const user = await User.findByPk(student.get("user_id") as string);
     if (user) {
-      await user.update({ is_active: false });
+      await user.destroy();
     }
 
-    return reply.status(200).send({ message: "Student deactivated successfully" });
+    return reply.status(200).send({ message: "Student deleted successfully" });
   } catch (error) {
     console.error(error);
     return reply.status(500).send({ error: "Failed to delete student" });

@@ -9,17 +9,29 @@ interface SignupBody {
   phone: string;
   password: string;
   role_name: string;
-  client_id: number;
-  profile_image?: string;
-  date_of_birth?: Date;
-  gender?: 'male' | 'female' | 'other';
-  class?: string;
-  section?: string;
+  client_id: string;  // Changed to string (UUID)
+  // Student fields
   parent_name?: string;
-  parent_phone?: string;
-  subject?: string;
-  qualification?: string;
+  mobile_number?: string;
+  gender?: 'male' | 'female' | 'other';
+  profile_image_url?: string;
+  aadhar_number?: string;
+  standard?: string;
+  division?: string;
+  admission_date?: Date;
+  address?: string;
+  category?: string;
+  // Teacher fields
+  date_of_birth?: Date;
   designation?: string;
+  qualification?: string;
+  joining_date?: Date;
+  experience_years?: number;
+  is_class_teacher?: boolean;
+  assigned_standard?: string;
+  assigned_division?: string;
+  // Admin fields
+  admin_designation?: string;
 }
 
 interface LoginBody {

@@ -6,6 +6,8 @@ const JWT_SECRET = process.env.JWT_SECRET || "school_secret";
 interface JwtPayload {
   user_id: string | number;
   role_id: string | number;
+  role_name: string;
+  client_id?: string | null;
 }
 
 declare module "fastify" {

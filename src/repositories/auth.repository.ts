@@ -16,9 +16,6 @@ export const createUserWithRole = async (data: any) => {
         role_id: data.role_id,
         role_name: data.role_name,
         client_id: data.client_id,
-        profile_image: data.profile_image,
-        date_of_birth: data.date_of_birth,
-        gender: data.gender,
       },
       { transaction: t }
     );
@@ -28,16 +25,20 @@ export const createUserWithRole = async (data: any) => {
       await Student.create(
         {
           user_id: user.id,
+          client_id: data.client_id,
           first_name: data.first_name,
           middle_name: data.middle_name,
           last_name: data.last_name,
-          class: data.class,
-          section: data.section,
           parent_name: data.parent_name,
-          parent_phone: data.parent_phone,
-          date_of_birth: data.date_of_birth,
+          mobile_number: data.mobile_number,
           gender: data.gender,
+          profile_image_url: data.profile_image_url,
+          aadhar_number: data.aadhar_number,
+          standard: data.standard,
+          division: data.division,
+          admission_date: data.admission_date,
           address: data.address,
+          category: data.category,
         },
         { transaction: t }
       );
@@ -47,14 +48,21 @@ export const createUserWithRole = async (data: any) => {
       await Teacher.create(
         {
           user_id: user.id,
+          client_id: data.client_id,
           first_name: data.first_name,
           middle_name: data.middle_name,
           last_name: data.last_name,
-          subject: data.subject,
-          qualification: data.qualification,
           date_of_birth: data.date_of_birth,
           gender: data.gender,
-          address: data.address,
+          profile_image_url: data.profile_image_url,
+          mobile_number: data.mobile_number,
+          designation: data.designation,
+          qualification: data.qualification,
+          joining_date: data.joining_date,
+          experience_years: data.experience_years,
+          is_class_teacher: data.is_class_teacher,
+          assigned_standard: data.assigned_standard,
+          assigned_division: data.assigned_division,
         },
         { transaction: t }
       );
@@ -64,13 +72,13 @@ export const createUserWithRole = async (data: any) => {
       await Admin.create(
         {
           user_id: user.id,
+          client_id: data.client_id,
           first_name: data.first_name,
           middle_name: data.middle_name,
           last_name: data.last_name,
-          designation: data.designation,
-          date_of_birth: data.date_of_birth,
-          gender: data.gender,
-          address: data.address,
+          designation: data.admin_designation,
+          mobile_number: data.mobile_number,
+          profile_image_url: data.profile_image_url,
         },
         { transaction: t }
       );

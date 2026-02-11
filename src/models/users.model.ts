@@ -15,10 +15,6 @@ export class User
   public role_id!: string;
   public role_name!: string;
   public client_id!: string;
-  public is_active!: boolean;
-  public profile_image!: string;
-  public date_of_birth!: Date;
-  public gender!: 'male' | 'female' | 'other';
   public created_at!: Date;
 }
 
@@ -39,11 +35,11 @@ User.init(
     },
     role_name: {
       type: DataTypes.STRING,
-      allowNull: true,  // Temporarily allow null
+      allowNull: true,
     },
     first_name: {
       type: DataTypes.STRING,
-      allowNull: true,  // Temporarily allow null
+      allowNull: true,
     },
     middle_name: {
       type: DataTypes.STRING,
@@ -51,7 +47,7 @@ User.init(
     },
     last_name: {
       type: DataTypes.STRING,
-      allowNull: true,  // Temporarily allow null
+      allowNull: true,
     },
     phone: {
       type: DataTypes.STRING,
@@ -61,22 +57,6 @@ User.init(
     password: {
       type: DataTypes.STRING,
       allowNull: false,
-    },
-    is_active: {
-      type: DataTypes.BOOLEAN,
-      defaultValue: true,
-    },
-    profile_image: {
-      type: DataTypes.STRING,
-      allowNull: true,
-    },
-    date_of_birth: {
-      type: DataTypes.DATE,
-      allowNull: true,
-    },
-    gender: {
-      type: DataTypes.ENUM('male', 'female', 'other'),
-      allowNull: true,
     },
   },
   {

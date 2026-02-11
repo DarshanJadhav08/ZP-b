@@ -38,8 +38,8 @@ export const addTeacherController = async (req: FastifyRequest, reply: FastifyRe
       phone,
       password: hashedPassword,
       role_id: teacherRole.id,
+      role_name: "teacher",
       client_id: null,
-      is_active: true,
     });
 
     console.log("User created:", user.id);
@@ -82,19 +82,12 @@ export const getAllTeachersController = async (req: FastifyRequest, reply: Fasti
     const whereUser: any = {};
     const whereTeacher: any = {};
 
-    // By default, only show active users
-    whereUser.is_active = true;
-
     if (search) {
-      whereUser.name = { [Op.like]: `%${search}%` };
+      whereUser.first_name = { [Op.like]: `%${search}%` };
     }
 
     if (subject) {
       whereTeacher.subject = { [Op.like]: `%${subject}%` };
-    }
-
-    if (is_active !== undefined) {
-      whereUser.is_active = is_active === 'true';
     }
 
     const { count, rows: teachers } = await Teacher.findAndCountAll({
@@ -104,7 +97,7 @@ export const getAllTeachersController = async (req: FastifyRequest, reply: Fasti
           model: User,
           as: "user",
           where: whereUser,
-          attributes: ["id", "first_name","middle_name","last_name", "phone", "is_active", "created_at"],
+          attributes: ["id", "first_name","middle_name","last_name", "phone", "created_at"],
         },
       ],
       limit: Number(limit),
@@ -133,7 +126,7 @@ export const getAllTeachersController = async (req: FastifyRequest, reply: Fasti
 export const updateTeacherController = async (req: FastifyRequest, reply: FastifyReply) => {
   try {
     const { teacher_id } = req.params as any;
-    const { first_name, phone, subject, qualification, is_active } = req.body as any;
+    const { first_name, phone, subject, qualification } = req.body as any;
 
     const teacher = await Teacher.findByPk(teacher_id);
     if (!teacher) {
@@ -142,7 +135,7 @@ export const updateTeacherController = async (req: FastifyRequest, reply: Fastif
 
     const user = await User.findByPk(teacher.get("user_id") as string);
     if (user) {
-      await user.update({ first_name, phone, is_active });
+      await user.update({ first_name, phone });
     }
 
     await teacher.update({ subject, qualification });
@@ -165,10 +158,10 @@ export const deleteTeacherController = async (req: FastifyRequest, reply: Fastif
 
     const user = await User.findByPk(teacher.get("user_id") as string);
     if (user) {
-      await user.update({ is_active: false });
+      await user.destroy();
     }
 
-    return reply.status(200).send({ message: "Teacher deactivated successfully" });
+    return reply.status(200).send({ message: "Teacher deleted successfully" });
   } catch (error) {
     console.error(error);
     return reply.status(500).send({ error: "Failed to delete teacher" });

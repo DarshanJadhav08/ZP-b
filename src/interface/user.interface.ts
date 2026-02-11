@@ -6,12 +6,8 @@ export interface IUser {
   phone: string;
   password: string;
   role_id: string;
+  role_name: string;
   client_id?: string | null;
-  is_active?: boolean;
-  role_name?:string;
-  profile_image?: string;
-  date_of_birth?: Date;
-  gender?: 'male' | 'female' | 'other';
   created_at?: Date;
 }
 

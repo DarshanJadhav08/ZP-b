@@ -8,6 +8,7 @@ export interface IUser {
   role_id: string;
   role_name: string;
   client_id?: string | null;
+  is_active?: boolean;
   created_at?: Date;
 }
 

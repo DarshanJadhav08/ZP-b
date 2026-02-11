@@ -12,8 +12,9 @@ export default async function teacherRoutes(app: FastifyInstance) {
   app.addHook("preHandler", authMiddleware);
   app.addHook("preHandler", adminMiddleware);
 
-  app.post("/", addTeacherController);
-  app.get("/", getAllTeachersController);
-  app.put("/:teacher_id", updateTeacherController);
-  app.delete("/:teacher_id", deleteTeacherController);
+  // Client-specific routes
+  app.post("/:client_id/teachers", addTeacherController);
+  app.get("/:client_id/teachers", getAllTeachersController);
+  app.put("/:client_id/teachers/:teacher_id", updateTeacherController);
+  app.delete("/:client_id/teachers/:teacher_id", deleteTeacherController);
 }

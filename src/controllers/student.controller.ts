@@ -1,115 +1,42 @@
 import { FastifyRequest, FastifyReply } from "fastify";
-import { User } from "../models/users.model";
-import { Student } from "../models/student.model";
-import { Role } from "../models/role.model";
-import bcrypt from "bcrypt";
-import { Op } from "sequelize";
+import {
+  createStudentService,
+  getAllStudentsService,
+  updateStudentService,
+  deleteStudentService,
+} from "../services/student.service";
 
 export const createStudentController = async (req: FastifyRequest, reply: FastifyReply) => {
   try {
-    const { first_name,last_name, phone, password, roll_no, class: className, section, parent_name, parent_phone } = req.body as any;
-
-    const existingUser = await User.findOne({ where: { phone } });
-    if (existingUser) {
-      return reply.status(400).send({ error: "Phone number already exists" });
-    }
-
-    const studentRole = await Role.findOne({ where: { name: "student" } });
-    if (!studentRole) {
-      return reply.status(500).send({ error: "Student role not found" });
-    }
-
-    const hashedPassword = await bcrypt.hash(password, 10);
-
-    const user = await User.create({
-      first_name,
-      last_name,
-      phone,
-      password: hashedPassword,
-      role_id: studentRole.id,
-      role_name: "student",
-      client_id: null,
+    const { client_id } = req.params as any;
+    const body = req.body as any;
+    const studentData = { ...body, client_id };
+    const student = await createStudentService(studentData);
+    return reply.status(201).send({
+      message: "Student created successfully",
+      student,
     });
-
-    await Student.create({
-      user_id: user.id,
-      first_name,
-      roll_no,
-      class: className,
-      section,
-      parent_name,
-      parent_phone,
+  } catch (error: any) {
+    console.error("Error in createStudentController:", error);
+    return reply.status(500).send({
+      error: "Failed to create student",
+      details: error.message,
     });
-
-    return reply.status(201).send({ 
-      message: "Student created successfully", 
-      student: {
-        user_id: user.id,
-        name: user.first_name,
-        phone: user.phone,
-        roll_no,
-        class: className,
-        section,
-        parent_name,
-        parent_phone
-      }
-    });
-  } catch (error) {
-    console.error(error);
-    return reply.status(500).send({ error: "Failed to create student" });
   }
 };
 
 export const getAllStudentsController = async (req: FastifyRequest, reply: FastifyReply) => {
   try {
-    const { page = 1, limit = 10, search, class: className, section, is_active } = req.query as any;
-
-    const offset = (Number(page) - 1) * Number(limit);
-
-    const whereUser: any = {};
-    const whereStudent: any = {};
-
-    if (search) {
-      whereUser.first_name = { [Op.like]: `%${search}%` };
-    }
-
-    if (className) {
-      whereStudent.class = className;
-    }
-
-    if (section) {
-      whereStudent.section = section;
-    }
-
-    const { count, rows: students } = await Student.findAndCountAll({
-      where: whereStudent,
-      include: [
-        {
-          model: User,
-          as: "user",
-          where: whereUser,
-          attributes: ["id", "first_name","middle_name","last_name", "phone"],
-        },
-      ],
-      limit: Number(limit),
-      offset: offset,
-      order: [["class", "ASC"], ["section", "ASC"], ["roll_no", "ASC"]],
-    });
-
-    return reply.status(200).send({ 
-      pagination: {
-        total: count,
-        page: Number(page),
-        limit: Number(limit),
-        totalPages: Math.ceil(count / Number(limit))
-      },
-      students
-    });
+    const { client_id } = req.params as any;
+    const query = req.query as any;
+    const filters = { ...query, client_id };
+    const result = await getAllStudentsService(filters);
+    return reply.status(200).send(result);
   } catch (error: any) {
     console.error("Error in getAllStudentsController:", error);
-    return reply.status(500).send({ 
+    return reply.status(500).send({
       error: "Failed to fetch students",
-      details: error.message 
+      details: error.message,
     });
   }
 };
@@ -117,44 +44,27 @@ export const getAllStudentsController = async (req: FastifyRequest, reply: Fasti
 export const updateStudentController = async (req: FastifyRequest, reply: FastifyReply) => {
   try {
     const { student_id } = req.params as any;
-    const { first_name, phone, roll_no, class: className, section, parent_name, parent_phone } = req.body as any;
-
-    const student = await Student.findByPk(student_id);
-    if (!student) {
-      return reply.status(404).send({ error: "Student not found" });
-    }
-
-    const user = await User.findByPk(student.get("user_id") as string);
-    if (user) {
-      await user.update({ first_name, phone });
-    }
-
-    await student.update({ roll_no, class: className, section, parent_name, parent_phone });
-
-    return reply.status(200).send({ message: "Student updated successfully" });
-  } catch (error) {
-    console.error(error);
-    return reply.status(500).send({ error: "Failed to update student" });
+    const result = await updateStudentService(student_id, req.body);
+    return reply.status(200).send(result);
+  } catch (error: any) {
+    console.error("Error in updateStudentController:", error);
+    return reply.status(500).send({
+      error: "Failed to update student",
+      details: error.message,
+    });
   }
 };
 
 export const deleteStudentController = async (req: FastifyRequest, reply: FastifyReply) => {
   try {
     const { student_id } = req.params as any;
-
-    const student = await Student.findByPk(student_id);
-    if (!student) {
-      return reply.status(404).send({ error: "Student not found" });
-    }
-
-    const user = await User.findByPk(student.get("user_id") as string);
-    if (user) {
-      await user.destroy();
-    }
-
-    return reply.status(200).send({ message: "Student deleted successfully" });
-  } catch (error) {
-    console.error(error);
-    return reply.status(500).send({ error: "Failed to delete student" });
+    const result = await deleteStudentService(student_id);
+    return reply.status(200).send(result);
+  } catch (error: any) {
+    console.error("Error in deleteStudentController:", error);
+    return reply.status(500).send({
+      error: "Failed to delete student",
+      details: error.message,
+    });
   }
 };

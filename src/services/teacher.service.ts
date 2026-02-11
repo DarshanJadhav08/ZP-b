@@ -9,8 +9,28 @@ import {
   findTeacherRoleRepo,
 } from "../repositories/teacher.repository";
 
-export const addTeacherService = async (teacherData: any) => {
-  const { first_name, last_name, phone, role_name, password, subject, qualification, client_id } = teacherData;
+export const addTeacherService = async (teacherData: any, userId?: string) => {
+  const { 
+    first_name, 
+    middle_name,
+    last_name, 
+    phone, 
+    role_name, 
+    password, 
+    subject, 
+    qualification, 
+    client_id,
+    date_of_birth,
+    gender,
+    profile_image_url,
+    mobile_number,
+    designation,
+    joining_date,
+    experience_years,
+    is_class_teacher,
+    assigned_standard,
+    assigned_division
+  } = teacherData;
 
   if (!first_name || !phone || !password || !client_id) {
     throw new Error("Name, phone, password and client_id are required");
@@ -30,9 +50,10 @@ export const addTeacherService = async (teacherData: any) => {
 
   const user = await User.create({
     first_name,
+    middle_name,
     last_name,
     phone,
-    role_name,
+    role_name: "teacher",
     password: hashedPassword,
     role_id: teacherRole.id,
     client_id: client_id,
@@ -40,13 +61,28 @@ export const addTeacherService = async (teacherData: any) => {
 
   await createTeacherRepo({
     user_id: user.id,
+    client_id,
+    first_name,
+    middle_name,
+    last_name,
     subject,
     qualification,
+    date_of_birth,
+    gender,
+    profile_image_url,
+    mobile_number,
+    designation,
+    joining_date,
+    experience_years,
+    is_class_teacher,
+    assigned_standard,
+    assigned_division,
+    created_by: userId || user.id,
   });
 
   return {
     user_id: user.id,
-    name: user.first_name,
+    name: `${user.first_name} ${user.last_name || ''}`.trim(),
     phone: user.phone,
     subject: subject || null,
     qualification: qualification || null,
@@ -67,7 +103,7 @@ export const getAllTeachersService = async (filters: any) => {
   };
 };
 
-export const updateTeacherService = async (teacherId: string, updateData: any) => {
+export const updateTeacherService = async (teacherId: string, updateData: any, userId?: string) => {
   const { first_name, phone, subject, qualification } = updateData;
 
   const teacher = await findTeacherByIdRepo(teacherId);
@@ -80,7 +116,7 @@ export const updateTeacherService = async (teacherId: string, updateData: any) =
     await user.update({ first_name, phone });
   }
 
-  await updateTeacherRepo(teacherId, { subject, qualification });
+  await updateTeacherRepo(teacherId, { subject, qualification, updated_by: userId });
 
   return { message: "Teacher updated successfully" };
 };

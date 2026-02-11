@@ -52,6 +52,7 @@ export const addAdminService = async (adminData: any) => {
     gender,
     mobile_number,
     profile_image_url,
+    created_by: adminData.created_by || user.id,
   });
 
   return {
@@ -78,7 +79,7 @@ export const getAllAdminsService = async (filters: any) => {
 };
 
 export const updateAdminService = async (adminId: string, updateData: any) => {
-  const { first_name, last_name, phone, designation, qualification, date_of_birth, experience, gender, mobile_number, profile_image_url, is_active } = updateData;
+  const { first_name, last_name, phone, designation, qualification, date_of_birth, experience, gender, mobile_number, profile_image_url, is_active, updated_by } = updateData;
 
   const admin = await findAdminByIdRepo(adminId);
   if (!admin) {
@@ -99,7 +100,8 @@ export const updateAdminService = async (adminId: string, updateData: any) => {
     experience, 
     gender, 
     mobile_number, 
-    profile_image_url 
+    profile_image_url,
+    updated_by: updated_by || user?.id,
   });
 
   return { message: "Admin updated successfully" };

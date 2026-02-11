@@ -22,7 +22,7 @@ Student.init(
     },
     client_id: {
       type: DataTypes.UUID,
-      allowNull: false,
+      allowNull: true,
       references: {
         model: 'clients',
         key: 'id',
@@ -30,7 +30,7 @@ Student.init(
     },
     first_name: {
       type: DataTypes.STRING,
-      allowNull: false,
+      allowNull: true,
     },
     middle_name: {
       type: DataTypes.STRING,
@@ -38,7 +38,7 @@ Student.init(
     },
     last_name: {
       type: DataTypes.STRING,
-      allowNull: false,
+      allowNull: true,
     },
     parent_name: {
       type: DataTypes.STRING,
@@ -81,10 +81,20 @@ Student.init(
       type: DataTypes.ENUM('General', 'OBC', 'SC', 'ST', 'NT'),
       allowNull: true,
     },
+    created_by: {
+      type: DataTypes.UUID,
+      allowNull: true,
+    },
+    updated_by: {
+      type: DataTypes.UUID,
+      allowNull: true,
+    },
   },
   {
     sequelize,
     tableName: "students",
-    timestamps: false,
+    timestamps: true,
+    createdAt: 'created_on',
+    updatedAt: 'updated_on',
   }
 );

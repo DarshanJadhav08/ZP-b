@@ -4,9 +4,12 @@ import { Role } from "../models/role.model";
 import { Op } from "sequelize";
 
 export const createStudentRepo = async (studentData: any) => {
-  const { roll_no, class: className, section, ...rest } = studentData;
+  const { roll_no, class: className, section, client_id, first_name, last_name, ...rest } = studentData;
   return await Student.create({
     ...rest,
+    client_id,
+    first_name,
+    last_name,
     standard: className,
     division: section,
   });

@@ -22,7 +22,7 @@ Teacher.init(
     },
     client_id: {
       type: DataTypes.UUID,
-      allowNull: false,
+      allowNull: true,
       references: {
         model: 'clients',
         key: 'id',
@@ -30,7 +30,7 @@ Teacher.init(
     },
     first_name: {
       type: DataTypes.STRING,
-      allowNull: false,
+      allowNull: true,
     },
     middle_name: {
       type: DataTypes.STRING,
@@ -38,7 +38,7 @@ Teacher.init(
     },
     last_name: {
       type: DataTypes.STRING,
-      allowNull: false,
+      allowNull: true,
     },
     date_of_birth: {
       type: DataTypes.DATE,
@@ -84,10 +84,20 @@ Teacher.init(
       type: DataTypes.STRING,
       allowNull: true,
     },
+    created_by: {
+      type: DataTypes.UUID,
+      allowNull: true,
+    },
+    updated_by: {
+      type: DataTypes.UUID,
+      allowNull: true,
+    },
   },
   {
     sequelize,
     tableName: "teachers",
-    timestamps: false,
+    timestamps: true,
+    createdAt: 'created_on',
+    updatedAt: 'updated_on',
   }
 );

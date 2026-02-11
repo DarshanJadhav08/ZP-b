@@ -11,7 +11,8 @@ export const createStudentController = async (req: FastifyRequest, reply: Fastif
     const { client_id } = req.params as any;
     const body = req.body as any;
     const studentData = { ...body, client_id };
-    const student = await createStudentService(studentData);
+    const userId = req.user?.user_id as string;
+    const student = await createStudentService(studentData, userId);
     return reply.status(201).send({
       message: "Student created successfully",
       student,
@@ -44,7 +45,8 @@ export const getAllStudentsController = async (req: FastifyRequest, reply: Fasti
 export const updateStudentController = async (req: FastifyRequest, reply: FastifyReply) => {
   try {
     const { student_id } = req.params as any;
-    const result = await updateStudentService(student_id, req.body);
+    const userId = req.user?.user_id as string;
+    const result = await updateStudentService(student_id, req.body, userId);
     return reply.status(200).send(result);
   } catch (error: any) {
     console.error("Error in updateStudentController:", error);

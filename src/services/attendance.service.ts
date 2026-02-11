@@ -133,9 +133,18 @@ export const getAttendancesByClassService = async (
   
   return await Attendance.findAll({
     where: attendanceWhere,
+    attributes: ['id', 'client_id', 'student_id', 'teacher_id', 'date', 'status', 'remark'],
     include: [
-      { model: Student, as: 'student' },
-      { model: Teacher, as: 'teacher' }
+      { 
+        model: Student, 
+        as: 'student',
+        attributes: ['id', 'first_name', 'middle_name', 'last_name', 'mobile_number', 'standard', 'division', 'gender']
+      },
+      { 
+        model: Teacher, 
+        as: 'teacher',
+        attributes: ['id', 'first_name', 'middle_name', 'last_name']
+      }
     ],
     order: [['date', 'DESC']]
   });

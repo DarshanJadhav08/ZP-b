@@ -68,10 +68,20 @@ Admin.init(
       type: DataTypes.ENUM('male', 'female', 'other'),
       allowNull: true,
     },
+    created_by: {
+      type: DataTypes.UUID,
+      allowNull: true,
+    },
+    updated_by: {
+      type: DataTypes.UUID,
+      allowNull: true,
+    },
   },
   {
     sequelize,
     tableName: "admins",
-    timestamps: false,
+    timestamps: true,
+    createdAt: 'created_on',
+    updatedAt: 'updated_on',
   }
 );

@@ -11,7 +11,8 @@ export const addTeacherController = async (req: FastifyRequest, reply: FastifyRe
     const { client_id } = req.params as any;
     const body = req.body as any;
     const teacherData = { ...body, client_id };
-    const teacher = await addTeacherService(teacherData);
+    const userId = req.user?.user_id as string;
+    const teacher = await addTeacherService(teacherData, userId);
     return reply.status(201).send({
       message: "Teacher added successfully",
       teacher,
@@ -44,7 +45,8 @@ export const getAllTeachersController = async (req: FastifyRequest, reply: Fasti
 export const updateTeacherController = async (req: FastifyRequest, reply: FastifyReply) => {
   try {
     const { teacher_id } = req.params as any;
-    const result = await updateTeacherService(teacher_id, req.body);
+    const userId = req.user?.user_id as string;
+    const result = await updateTeacherService(teacher_id, req.body, userId);
     return reply.status(200).send(result);
   } catch (error: any) {
     console.error("Error in updateTeacherController:", error);

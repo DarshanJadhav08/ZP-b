@@ -9,8 +9,25 @@ import {
   findStudentRoleRepo,
 } from "../repositories/student.repository";
 
-export const createStudentService = async (studentData: any) => {
-  const { name, phone, password, roll_no, class: className, section, parent_name, parent_phone, client_id } = studentData;
+export const createStudentService = async (studentData: any, userId?: string) => {
+  const { 
+    name, 
+    phone, 
+    password, 
+    roll_no, 
+    class: className, 
+    section, 
+    parent_name, 
+    parent_phone, 
+    client_id,
+    gender,
+    mobile_number,
+    profile_image_url,
+    aadhar_number,
+    admission_date,
+    address,
+    category
+  } = studentData;
 
   if (!name || !phone || !password || !client_id) {
     throw new Error("Name, phone, password and client_id are required");
@@ -41,11 +58,22 @@ export const createStudentService = async (studentData: any) => {
 
   await createStudentRepo({
     user_id: user.id,
+    client_id,
+    first_name: name,
+    last_name: name,
     roll_no,
     class: className,
     section,
     parent_name,
     parent_phone,
+    gender,
+    mobile_number,
+    profile_image_url,
+    aadhar_number,
+    admission_date,
+    address,
+    category,
+    created_by: userId || user.id,
   });
 
   return {
@@ -74,7 +102,7 @@ export const getAllStudentsService = async (filters: any) => {
   };
 };
 
-export const updateStudentService = async (studentId: string, updateData: any) => {
+export const updateStudentService = async (studentId: string, updateData: any, userId?: string) => {
   const { name, phone, roll_no, class: className, section, parent_name, parent_phone, is_active } = updateData;
 
   const student = await findStudentByIdRepo(studentId);
@@ -89,7 +117,7 @@ export const updateStudentService = async (studentId: string, updateData: any) =
     await user.update({ phone, is_active });
   }
 
-  await updateStudentRepo(studentId, { roll_no, class: className, section, parent_name, parent_phone });
+  await updateStudentRepo(studentId, { roll_no, class: className, section, parent_name, parent_phone, updated_by: userId });
 
   return { message: "Student updated successfully" };
 };

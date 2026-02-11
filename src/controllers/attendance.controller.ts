@@ -12,9 +12,7 @@ import {
 } from "../services/attendance.service";
 
 interface CreateAttendanceBody {
-  client_id: string;
   student_id: string;
-  teacher_id: string;
   date: string;
   status: 'Present' | 'Absent' | 'Late';
   remark?: string;
@@ -27,21 +25,27 @@ interface UpdateAttendanceBody {
 
 interface BulkCreateAttendanceBody {
   attendances: Array<{
-    client_id: string;
     student_id: string;
-    teacher_id: string;
     date: string;
     status: 'Present' | 'Absent' | 'Late';
     remark?: string;
   }>;
 }
 
-export const createAttendanceController = async (
-  req: FastifyRequest<{ Body: CreateAttendanceBody }>,
-  reply: FastifyReply
-) => {
+export const createAttendanceController = async (req: any, reply: FastifyReply) => {
   try {
-    const attendance = await createAttendanceService(req.body);
+    const { student_id, date, status, remark } = req.body;
+    const { user_id, client_id } = req.user!;
+    
+    const attendance = await createAttendanceService({
+      client_id: client_id as string,
+      student_id,
+      teacher_id: user_id as string,
+      date,
+      status,
+      remark
+    });
+    
     reply.status(201).send({
       message: "Attendance created successfully",
       data: attendance
@@ -149,13 +153,7 @@ export const getAttendancesByDateController = async (
   }
 };
 
-export const updateAttendanceController = async (
-  req: FastifyRequest<{ 
-    Params: { id: string };
-    Body: UpdateAttendanceBody 
-  }>,
-  reply: FastifyReply
-) => {
+export const updateAttendanceController = async (req: any, reply: FastifyReply) => {
   try {
     const attendance = await updateAttendanceService(req.params.id, req.body);
     reply.send({
@@ -172,10 +170,7 @@ export const updateAttendanceController = async (
   }
 };
 
-export const deleteAttendanceController = async (
-  req: FastifyRequest<{ Params: { id: string } }>,
-  reply: FastifyReply
-) => {
+export const deleteAttendanceController = async (req: any, reply: FastifyReply) => {
   try {
     await deleteAttendanceService(req.params.id);
     reply.send({
@@ -226,12 +221,17 @@ export const getAttendancesByClassController = async (
   }
 };
 
-export const bulkCreateAttendancesController = async (
-  req: FastifyRequest<{ Body: BulkCreateAttendanceBody }>,
-  reply: FastifyReply
-) => {
+export const bulkCreateAttendancesController = async (req: any, reply: FastifyReply) => {
   try {
-    const attendances = await bulkCreateAttendancesService(req.body.attendances);
+    const { user_id, client_id } = req.user!;
+    
+    const attendancesWithAuth = req.body.attendances.map((att: any) => ({
+      ...att,
+      client_id: client_id as string,
+      teacher_id: user_id as string
+    }));
+    
+    const attendances = await bulkCreateAttendancesService(attendancesWithAuth);
     reply.status(201).send({
       message: "Attendances created successfully",
       count: attendances.length,

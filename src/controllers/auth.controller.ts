@@ -3,11 +3,16 @@ import { signupService, loginService } from "../services/auth.service";
 import { refreshTokenService } from "../services/token.service";
 
 interface SignupBody {
-  name: string;
+  first_name: string;
+  middle_name?: string;
+  last_name: string;
   phone: string;
   password: string;
   role_name: string;
   client_id: number;
+  profile_image?: string;
+  date_of_birth?: Date;
+  gender?: 'male' | 'female' | 'other';
   class?: string;
   section?: string;
   parent_name?: string;

@@ -8,11 +8,17 @@ export const createUserWithRole = async (data: any) => {
     // Create user
     const user = await User.create(
       {
-        name: data.name,
+        first_name: data.first_name,
+        middle_name: data.middle_name,
+        last_name: data.last_name,
         phone: data.phone,
         password: data.password,
         role_id: data.role_id,
+        role_name: data.role_name,
         client_id: data.client_id,
+        profile_image: data.profile_image,
+        date_of_birth: data.date_of_birth,
+        gender: data.gender,
       },
       { transaction: t }
     );
@@ -22,10 +28,16 @@ export const createUserWithRole = async (data: any) => {
       await Student.create(
         {
           user_id: user.id,
+          first_name: data.first_name,
+          middle_name: data.middle_name,
+          last_name: data.last_name,
           class: data.class,
           section: data.section,
           parent_name: data.parent_name,
           parent_phone: data.parent_phone,
+          date_of_birth: data.date_of_birth,
+          gender: data.gender,
+          address: data.address,
         },
         { transaction: t }
       );
@@ -35,8 +47,14 @@ export const createUserWithRole = async (data: any) => {
       await Teacher.create(
         {
           user_id: user.id,
+          first_name: data.first_name,
+          middle_name: data.middle_name,
+          last_name: data.last_name,
           subject: data.subject,
           qualification: data.qualification,
+          date_of_birth: data.date_of_birth,
+          gender: data.gender,
+          address: data.address,
         },
         { transaction: t }
       );
@@ -46,7 +64,13 @@ export const createUserWithRole = async (data: any) => {
       await Admin.create(
         {
           user_id: user.id,
+          first_name: data.first_name,
+          middle_name: data.middle_name,
+          last_name: data.last_name,
           designation: data.designation,
+          date_of_birth: data.date_of_birth,
+          gender: data.gender,
+          address: data.address,
         },
         { transaction: t }
       );

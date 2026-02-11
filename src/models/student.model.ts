@@ -78,7 +78,7 @@ Student.init(
       allowNull: true,
     },
     category: {
-      type: DataTypes.STRING,
+      type: DataTypes.ENUM('General', 'OBC', 'SC', 'ST', 'NT'),
       allowNull: true,
     },
   },

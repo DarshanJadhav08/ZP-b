@@ -3,7 +3,7 @@ import { User } from "./users.model";
 import { Role } from "./role.model";
 import { Client } from "./client.model";
 import { Student } from "./student.model";
-import { Teacher } from "./teacher.modle";
+import { Teacher } from "./teacher.model";
 import { Admin } from "./admin.model";
 
 // User relationships

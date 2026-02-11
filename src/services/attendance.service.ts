@@ -32,12 +32,13 @@ export const createAttendanceService = async (data: {
     throw error;
   }
 
-  const teacher = await Teacher.findByPk(data.teacher_id);
+  const teacher = await Teacher.findOne({ where: { user_id: data.teacher_id } });
   if (!teacher) {
     const error: any = new Error("Teacher does not exist");
     error.statusCode = 404;
     throw error;
   }
+  data.teacher_id = (teacher as any).id;
 
   return await createAttendance(data);
 };
@@ -104,7 +105,19 @@ export const bulkCreateAttendancesService = async (
     remark?: string;
   }>
 ) => {
-  return await bulkCreateAttendances(attendances);
+  const teacher = await Teacher.findOne({ where: { user_id: attendances[0]?.teacher_id } });
+  if (!teacher) {
+    const error: any = new Error("Teacher does not exist");
+    error.statusCode = 404;
+    throw error;
+  }
+  
+  const attendancesWithTeacherId = attendances.map(att => ({
+    ...att,
+    teacher_id: (teacher as any).id
+  }));
+  
+  return await bulkCreateAttendances(attendancesWithTeacherId);
 };
 
 export const getAttendancesByClassService = async (
@@ -133,9 +146,18 @@ export const getAttendancesByClassService = async (
   
   return await Attendance.findAll({
     where: attendanceWhere,
+    attributes: ['id', 'client_id', 'student_id', 'teacher_id', 'date', 'status', 'remark'],
     include: [
-      { model: Student, as: 'student' },
-      { model: Teacher, as: 'teacher' }
+      { 
+        model: Student, 
+        as: 'student',
+        attributes: ['id', 'first_name', 'middle_name', 'last_name', 'mobile_number', 'standard', 'division', 'gender']
+      },
+      { 
+        model: Teacher, 
+        as: 'teacher',
+        attributes: ['id', 'first_name', 'middle_name', 'last_name']
+      }
     ],
     order: [['date', 'DESC']]
   });

@@ -76,12 +76,20 @@ Admin.init(
       type: DataTypes.UUID,
       allowNull: true,
     },
+    created_on: {
+      type: DataTypes.DATE,
+      allowNull: true,
+      defaultValue: DataTypes.NOW,
+    },
+    updated_on: {
+      type: DataTypes.DATE,
+      allowNull: true,
+      defaultValue: DataTypes.NOW,
+    },
   },
   {
     sequelize,
     tableName: "admins",
-    timestamps: true,
-    createdAt: 'created_on',
-    updatedAt: 'updated_on',
+    timestamps: false,
   }
 );

@@ -90,8 +90,18 @@ export const createUserWithRole = async (data: any) => {
 
     await t.commit();
     return user;
-  } catch (error) {
+  } catch (error: any) {
     await t.rollback();
+    
+    // Handle duplicate aadhar number
+    if (error.name === 'SequelizeUniqueConstraintError') {
+      if (error.fields?.aadhar_number) {
+        const customError: any = new Error("Aadhar number already exists");
+        customError.statusCode = 409;
+        throw customError;
+      }
+    }
+    
     throw error;
   }
 };

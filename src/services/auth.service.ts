@@ -70,17 +70,29 @@ const generateTokens = (userId: number | string, roleId: number | string, roleNa
 };
 
 export const signupService = async (data: SignupData) => {
+  // Check if phone already exists
+  const existingUser = await findUserByPhone(data.phone);
+  if (existingUser) {
+    const error: any = new Error("Phone number already exists");
+    error.statusCode = 409;
+    throw error;
+  }
+
   // Check role
   const role = await Role.findOne({ where: { name: data.role_name } });
   if (!role) {
-    throw new Error("Invalid role");
+    const error: any = new Error("Invalid role name");
+    error.statusCode = 400;
+    throw error;
   }
 
   // Check client
   if (data.client_id) {
     const client = await Client.findByPk(data.client_id);
     if (!client) {
-      throw new Error("Invalid client");
+      const error: any = new Error("Client does not exist");
+      error.statusCode = 404;
+      throw error;
     }
   }
 

@@ -15,6 +15,7 @@ export class User
   public role_id!: string;
   public role_name!: string;
   public client_id!: string;
+  public is_active!: boolean;
   public created_at!: Date;
 }
 
@@ -57,6 +58,10 @@ User.init(
     password: {
       type: DataTypes.STRING,
       allowNull: false,
+    },
+    is_active: {
+      type: DataTypes.BOOLEAN,
+      defaultValue: true,
     },
   },
   {

@@ -1,0 +1,97 @@
+import { Student } from "../models/student.model";
+import { User } from "../models/users.model";
+import { Role } from "../models/role.model";
+import { Op } from "sequelize";
+
+export const createStudentRepo = async (studentData: any) => {
+  const { roll_no, class: className, section, ...rest } = studentData;
+  return await Student.create({
+    ...rest,
+    standard: className,
+    division: section,
+  });
+};
+
+export const findAllStudentsRepo = async (filters: any) => {
+  const { page = 1, limit = 10, search, class: className, section, is_active, client_id } = filters;
+  const offset = (Number(page) - 1) * Number(limit);
+
+  const whereUser: any = { is_active: true };
+  const whereStudent: any = {};
+
+  if (client_id) {
+    whereUser.client_id = client_id;
+  }
+
+  if (search) {
+    whereUser.first_name = { [Op.like]: `%${search}%` };
+  }
+
+  if (className) {
+    whereStudent.standard = className;
+  }
+
+  if (section) {
+    whereStudent.division = section;
+  }
+
+  if (is_active !== undefined) {
+    whereUser.is_active = is_active === 'true';
+  }
+
+  return await Student.findAndCountAll({
+    where: whereStudent,
+    include: [
+      {
+        model: User,
+        as: "user",
+        where: whereUser,
+        attributes: ["id", "first_name", "last_name", "phone", "is_active"],
+      },
+    ],
+    limit: Number(limit),
+    offset: offset,
+    order: [["standard", "ASC"], ["division", "ASC"]],
+  });
+};
+
+export const findStudentByIdRepo = async (studentId: string) => {
+  return await Student.findByPk(studentId, {
+    include: [
+      {
+        model: User,
+        as: "user",
+        attributes: ["id", "first_name", "last_name", "phone", "is_active"],
+      },
+    ],
+  });
+};
+
+export const updateStudentRepo = async (studentId: string, updateData: any) => {
+  const student = await Student.findByPk(studentId);
+  if (!student) return null;
+
+  const { roll_no, class: className, section, ...rest } = updateData;
+  await student.update({
+    ...rest,
+    standard: className,
+    division: section,
+  });
+  return student;
+};
+
+export const deleteStudentRepo = async (studentId: string) => {
+  const student = await Student.findByPk(studentId);
+  if (!student) return null;
+
+  const user = await User.findByPk(student.get("user_id") as string);
+  if (user) {
+    await user.update({ is_active: false });
+  }
+
+  return student;
+};
+
+export const findStudentRoleRepo = async () => {
+  return await Role.findOne({ where: { name: "student" } });
+};

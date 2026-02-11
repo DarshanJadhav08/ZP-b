@@ -9,8 +9,9 @@ import { authMiddleware } from "../middelware/auth.middleware";
 import { adminMiddleware } from "../middelware/admin.middleware";
 
 export default async function studentRoutes(app: FastifyInstance) {
-  app.post("/", createStudentController);
-  app.get("/", getAllStudentsController);
-  app.put("/:student_id", updateStudentController);
-  app.delete("/:student_id", deleteStudentController);
+  // Client-specific routes
+  app.post("/:client_id/students", createStudentController);
+  app.get("/:client_id/students", getAllStudentsController);
+  app.put("/:client_id/students/:student_id", updateStudentController);
+  app.delete("/:client_id/students/:student_id", deleteStudentController);
 }

@@ -7,7 +7,7 @@ import { Op } from "sequelize";
 
 export const createStudentController = async (req: FastifyRequest, reply: FastifyReply) => {
   try {
-    const { name, phone, password, roll_no, class: className, section, parent_name, parent_phone } = req.body as any;
+    const { first_name,last_name, phone, password, roll_no, class: className, section, parent_name, parent_phone } = req.body as any;
 
     const existingUser = await User.findOne({ where: { phone } });
     if (existingUser) {
@@ -22,7 +22,8 @@ export const createStudentController = async (req: FastifyRequest, reply: Fastif
     const hashedPassword = await bcrypt.hash(password, 10);
 
     const user = await User.create({
-      name,
+      first_name,
+      last_name,
       phone,
       password: hashedPassword,
       role_id: studentRole.id,
@@ -32,6 +33,7 @@ export const createStudentController = async (req: FastifyRequest, reply: Fastif
 
     await Student.create({
       user_id: user.id,
+      first_name,
       roll_no,
       class: className,
       section,
@@ -43,7 +45,7 @@ export const createStudentController = async (req: FastifyRequest, reply: Fastif
       message: "Student created successfully", 
       student: {
         user_id: user.id,
-        name: user.name,
+        name: user.first_name,
         phone: user.phone,
         roll_no,
         class: className,
@@ -93,7 +95,7 @@ export const getAllStudentsController = async (req: FastifyRequest, reply: Fasti
           model: User,
           as: "user",
           where: whereUser,
-          attributes: ["id", "name", "phone", "is_active"],
+          attributes: ["id", "first_name","middle_name","last_name", "phone", "is_active"],
         },
       ],
       limit: Number(limit),
@@ -122,7 +124,7 @@ export const getAllStudentsController = async (req: FastifyRequest, reply: Fasti
 export const updateStudentController = async (req: FastifyRequest, reply: FastifyReply) => {
   try {
     const { student_id } = req.params as any;
-    const { name, phone, roll_no, class: className, section, parent_name, parent_phone, is_active } = req.body as any;
+    const { first_name, phone, roll_no, class: className, section, parent_name, parent_phone, is_active } = req.body as any;
 
     const student = await Student.findByPk(student_id);
     if (!student) {
@@ -131,7 +133,7 @@ export const updateStudentController = async (req: FastifyRequest, reply: Fastif
 
     const user = await User.findByPk(student.get("user_id") as string);
     if (user) {
-      await user.update({ name, phone, is_active });
+      await user.update({ first_name, phone, is_active });
     }
 
     await student.update({ roll_no, class: className, section, parent_name, parent_phone });

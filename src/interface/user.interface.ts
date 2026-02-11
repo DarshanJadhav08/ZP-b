@@ -8,6 +8,7 @@ export interface IUser {
   role_id: string;
   client_id?: string | null;
   is_active?: boolean;
+  role_name?:string;
   profile_image?: string;
   date_of_birth?: Date;
   gender?: 'male' | 'female' | 'other';

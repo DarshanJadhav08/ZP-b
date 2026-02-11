@@ -10,9 +10,9 @@ export const addTeacherController = async (req: FastifyRequest, reply: FastifyRe
     console.log("Request body:", req.body);
     console.log("Request user:", req.user);
 
-    const { name, phone, password, subject, qualification } = req.body as any;
+    const { first_name,middle_name,last_name, phone, password, subject, qualification } = req.body as any;
 
-    if (!name || !phone || !password) {
+    if (!first_name || !phone || !password) {
       return reply.status(400).send({ error: "Name, phone and password are required" });
     }
 
@@ -32,7 +32,9 @@ export const addTeacherController = async (req: FastifyRequest, reply: FastifyRe
     const hashedPassword = await bcrypt.hash(password, 10);
 
     const user = await User.create({
-      name,
+      first_name,
+      middle_name,
+      last_name,
       phone,
       password: hashedPassword,
       role_id: teacherRole.id,
@@ -54,7 +56,7 @@ export const addTeacherController = async (req: FastifyRequest, reply: FastifyRe
       message: "Teacher added successfully", 
       teacher: {
         user_id: user.id,
-        name: user.name,
+        name: user.first_name,
         phone: user.phone,
         subject: subject || null,
         qualification: qualification || null
@@ -102,7 +104,7 @@ export const getAllTeachersController = async (req: FastifyRequest, reply: Fasti
           model: User,
           as: "user",
           where: whereUser,
-          attributes: ["id", "name", "phone", "is_active", "created_at"],
+          attributes: ["id", "first_name","middle_name","last_name", "phone", "is_active", "created_at"],
         },
       ],
       limit: Number(limit),
@@ -131,7 +133,7 @@ export const getAllTeachersController = async (req: FastifyRequest, reply: Fasti
 export const updateTeacherController = async (req: FastifyRequest, reply: FastifyReply) => {
   try {
     const { teacher_id } = req.params as any;
-    const { name, phone, subject, qualification, is_active } = req.body as any;
+    const { first_name, phone, subject, qualification, is_active } = req.body as any;
 
     const teacher = await Teacher.findByPk(teacher_id);
     if (!teacher) {
@@ -140,7 +142,7 @@ export const updateTeacherController = async (req: FastifyRequest, reply: Fastif
 
     const user = await User.findByPk(teacher.get("user_id") as string);
     if (user) {
-      await user.update({ name, phone, is_active });
+      await user.update({ first_name, phone, is_active });
     }
 
     await teacher.update({ subject, qualification });

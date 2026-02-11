@@ -6,6 +6,7 @@ import { Student } from "./student.model";
 import { Teacher } from "./teacher.model";
 import { Admin } from "./admin.model";
 import { Attendance } from "./attendance.model";
+import { Homework } from "./homework.model";
 
 // User relationships
 User.belongsTo(Role, { foreignKey: "role_id" });
@@ -28,6 +29,10 @@ Attendance.belongsTo(Client, { foreignKey: "client_id", as: "client", onDelete: 
 Attendance.belongsTo(Student, { foreignKey: "student_id", as: "student", onDelete: "CASCADE" });
 Attendance.belongsTo(Teacher, { foreignKey: "teacher_id", as: "teacher" });
 
+// Homework relationships
+Homework.belongsTo(Teacher, { foreignKey: "teacher_id", as: "teacher" });
+Homework.belongsTo(Client, { foreignKey: "client_id", as: "client" });
+
 export {
   sequelize,
   User,
@@ -37,4 +42,5 @@ export {
   Teacher,
   Admin,
   Attendance,
+  Homework,
 };

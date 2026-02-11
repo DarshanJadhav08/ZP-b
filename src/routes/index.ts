@@ -5,6 +5,7 @@ import teacherRoutes from "./teacher.routes";
 import studentRoutes from "./student.routes";
 import adminRoutes from "./admin.routes.new";
 import attendanceRoutes from "./attendance.routes";
+import homeworkRoutes from "./homework.routes";
 
 export default async function routes(app: FastifyInstance) {
   app.register(authRoutes, { prefix: "/auth" });
@@ -13,4 +14,5 @@ export default async function routes(app: FastifyInstance) {
   app.register(studentRoutes, { prefix: "/students" });
   app.register(adminRoutes, { prefix: "/admins" });
   app.register(attendanceRoutes, { prefix: "/attendance" });
+  app.register(homeworkRoutes, { prefix: "/homework" });
 }
